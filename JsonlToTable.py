@@ -1,13 +1,13 @@
 import json
 
 
-def jsonl_to_markdown_table(json_line, table_number, error_file):
+def jsonl_to_markdown_table(json_line, table_number):
     obj = json.loads(json_line)
     rows = obj["table"]
     example_id = obj.get("example_id", "N/A")
     highlighted_cells = obj.get("highlighted_cells", [])
 
-    md_lines = [f"**Table {table_number}**", f"Example ID: {example_id}"]
+    md_lines = [f"Table {table_number}:", f"Example ID: {example_id}"]
     if highlighted_cells:
         hl = ", ".join(f"({r}, {c})" for r, c in highlighted_cells)
         md_lines.append(f"Highlighted Cells: {hl}")
@@ -37,7 +37,7 @@ def jsonl_to_markdown_table(json_line, table_number, error_file):
                     if r_off == 0 and c_off == 0:
                         cell_map[pos] = val
                     else:
-                        cell_map[pos] = "" 
+                        cell_map[pos] = ""
 
             col_pointer += col_span
 
@@ -75,18 +75,14 @@ def jsonl_to_markdown_table(json_line, table_number, error_file):
     return "\n".join(md_lines)
 
 
-# === File Handling ===
 with open("./datasets/dataset.jsonl", "r", encoding="utf-8") as infile, open(
     "output.txt", "w", encoding="utf-8"
-) as outfile, open("data_issues.txt", "w", encoding="utf-8") as error_file:
-
-    error_file.write("Data Issues Report\n==================\n\n")
+) as outfile:
 
     table_number = 1
     for line in infile:
-        markdown_table = jsonl_to_markdown_table(line, table_number, error_file)
+        markdown_table = jsonl_to_markdown_table(line, table_number)
         outfile.write(markdown_table + "\n\n")
         table_number += 1
 
-    error_file.write(f"\nProcessed {table_number - 1} tables total.\n")
     print("Complete")
