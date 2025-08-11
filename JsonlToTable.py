@@ -34,10 +34,7 @@ def jsonl_to_markdown_table(json_line, table_number):
             for r_off in range(row_span):
                 for c_off in range(col_span):
                     pos = (r_idx + r_off, col_pointer + c_off)
-                    if r_off == 0 and c_off == 0:
-                        cell_map[pos] = val
-                    else:
-                        cell_map[pos] = ""
+                    cell_map[pos] = val
 
             col_pointer += col_span
 
